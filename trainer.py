@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 from data_set import DataSet
 
-from visualization import draw_angle_in_video
+from visualization import visualize_angle_in_mp4
 
 # initialize tensorflow
 print(f"Tensorflow version {tf.__version__}")
@@ -29,7 +29,14 @@ model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-4),
 
 # train the model
 print("---- Training ----")
-model.fit(x_train, y_train, epochs=100)
+history = model.fit(x_train, y_train, epochs=100)
+
+plt.plot(history.history["loss"])
+plt.title("Loss over Epochs")
+plt.ylabel("Mean Squared Error")
+plt.xlabel("#Epochs")
+plt.legend()
+plt.savefig("loss.png")
 
 # test the model
 print("---- Testing ----")
@@ -52,4 +59,4 @@ plt.ylabel("Steering Angle")
 plt.savefig("plot.png")
 
 # visualize true and predicted angle in the images
-draw_angle_in_video(x_test, y_pred_degree, y_test_degree)
+visualize_angle_in_mp4(x_test, y_pred_degree, y_test_degree)

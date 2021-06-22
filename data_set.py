@@ -7,9 +7,7 @@ from sklearn.utils import shuffle
 class DataSet:
     output_units = 45
 
-    def __init__(self):
-        data_set_file = "data/track_data_2.h5"
-
+    def __init__(self, data_set_file="data/track_data_2.h5"):
         self.x = []
         self.y = []
 
@@ -25,6 +23,8 @@ class DataSet:
         self.y_train = None
         self.x_test = None
         self.y_test = None
+
+        self.train_data_length = None
 
     def _encode_angle(self, y: np.ndarray, train: bool) -> np.ndarray:
         y_tmp = []
@@ -57,6 +57,7 @@ class DataSet:
 
         # split data in train and test set and shuffle them
         split = round(len(self.x)*0.7)
+        self.train_data_length = split
         x_train = self.x[:split]
         y_train = self.y[:split]
         self.x_train, self.y_train = shuffle(x_train, y_train, random_state=16)

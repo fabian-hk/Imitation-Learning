@@ -5,4 +5,6 @@
 
 docker run -it --rm --gpus all -p 8888:8888 -v "/home/fabian/Documents/studium/Imitation-Learning:/opt/project" \
   -e JUPYTER_TOKEN=b0355f51bc6f93f72553da74bb6548801e64b2f9689ad96c \
-  tensorflow-gpu-jupyter
+  -e MPLCONFIGDIR=/tmp \
+  --user 1000:1000 \
+  tensorflow-gpu-jupyter jupyter notebook --no-browser --ip=0.0.0.0 --notebook-dir=/opt/project

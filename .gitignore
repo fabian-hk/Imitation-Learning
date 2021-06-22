@@ -3,3 +3,5 @@ data/
 venv/
 *.avi
 *.png
+__pycache__/
+.ipynb_checkpoints/
