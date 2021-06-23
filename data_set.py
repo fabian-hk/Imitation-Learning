@@ -2,10 +2,13 @@ from typing import Tuple
 import h5py
 import numpy as np
 from sklearn.utils import shuffle
+from PIL import Image
+from pathlib import Path
+
+import utils
 
 
 class DataSet:
-    output_units = 45
 
     def __init__(self, data_set_file="data/track_data_2.h5"):
         self.x = []
@@ -26,48 +29,33 @@ class DataSet:
 
         self.train_data_length = None
 
-    def _encode_angle(self, y: np.ndarray, train: bool) -> np.ndarray:
-        y_tmp = []
-        degree_per_bin = 180.0 / np.floor(self.output_units / 2.0)
-        middle_bin = int(np.floor(self.output_units / 2.0))
-        encoding = [0.1, 0.32, 0.61, 0.89, 1.0, 0.89, 0.61, 0.32, 0.1]
-        for y_el in y:
-            encoded_angle = np.zeros(self.output_units)
-            angle_bin = middle_bin + int(np.round(y_el / degree_per_bin))
-            if train:
-                start = angle_bin - 4
-                for i, e in enumerate(encoding):
-                    encoded_angle[i + start] = e
-            else:
-                encoded_angle[angle_bin] = 1.0
+    def preprocessing(self, scale=None, output_bins=45):
+        if scale is not None:
+            # down scale images
+            x_tmp = []
+            for img in self.x:
+                img = Image.fromarray(img)
+                img = img.resize(scale, Image.NEAREST)
+                x_tmp.append(np.array(img, dtype=np.float32))
 
-            y_tmp.append(encoded_angle)
+            self.x = np.asarray(x_tmp)
 
-        return np.asarray(y_tmp)
-
-    def decode_angle(self, y: np.ndarray) -> np.ndarray:
-        degree_per_bin = 180.0 / np.floor(self.output_units / 2.0)
-        middle_bin = int(np.floor(self.output_units / 2.0))
-        bin = np.argmax(y, axis=1)
-        return (bin - middle_bin) * degree_per_bin
-
-    def preprocessing(self):
         # normalize images
-        self.x = self.x / 255.0
+        self.x_normalized = self.x / 255.0
 
         # split data in train and test set and shuffle them
-        split = round(len(self.x)*0.7)
+        split = round(len(self.x_normalized) * 0.7)
         self.train_data_length = split
-        x_train = self.x[:split]
+        x_train = self.x_normalized[:split]
         y_train = self.y[:split]
         self.x_train, self.y_train = shuffle(x_train, y_train, random_state=16)
 
-        self.x_test = self.x[split:]
+        self.x_test = self.x_normalized[split:]
         self.y_test = self.y[split:]
 
         # encode steering wheel angles
-        self.y_train = self._encode_angle(self.y_train, True)
-        self.y_test = self._encode_angle(self.y_test, True)
+        self.y_train = utils.encode_angle(self.y_train, output_bins=output_bins)
+        self.y_test = utils.encode_angle(self.y_test, output_bins=output_bins)
 
     def get_train_data(self) -> Tuple[np.ndarray, np.ndarray]:
         return self.x_train, self.y_train
@@ -76,7 +64,22 @@ class DataSet:
         return self.x_test, self.y_test
 
 
+class MyDataSet:
+
+    def __init__(self, f="/opt/project/mydata"):
+        folder = Path(f)
+        self.X = []
+        for file in folder.iterdir():
+            img = Image.open(file)
+            img = img.convert("L")
+            img = img.crop((0, 0, 220, 206))
+            img = img.resize((64, 60), Image.NEAREST)
+            self.X.append(np.array(img, dtype=np.float32))
+
+        self.X = np.asarray(self.X)
+
+        self.X_preprocessed = self.X / 255.0
+
+
 if __name__ == '__main__':
-    ds = DataSet()
-    ds.preprocessing()
-    pass
+    ds = MyDataSet("mydata/")

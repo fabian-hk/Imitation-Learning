@@ -5,3 +5,6 @@ venv/
 *.png
 __pycache__/
 .ipynb_checkpoints/
+mydata
+model/
+graphic/mydata_visualization.gif

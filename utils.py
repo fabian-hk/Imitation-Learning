@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def encode_angle(y: np.ndarray, output_bins=45) -> np.ndarray:
+def encode_angle(y: np.ndarray, output_bins) -> np.ndarray:
     y_encoded = []
     degree_per_bin = 180.0 / np.floor(output_bins / 2.0)
     middle_bin = int(np.floor(output_bins / 2.0))
@@ -17,7 +17,7 @@ def encode_angle(y: np.ndarray, output_bins=45) -> np.ndarray:
     return np.asarray(y_encoded)
 
 
-def decode_angle(y: np.ndarray, output_bins=45) -> np.ndarray:
+def decode_angle(y: np.ndarray, output_bins) -> np.ndarray:
     degree_per_bin = 180.0 / np.floor(output_bins / 2.0)
     middle_bin = int(np.floor(output_bins / 2.0))
     bin = np.argmax(y, axis=1)
