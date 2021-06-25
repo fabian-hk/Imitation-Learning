@@ -81,5 +81,14 @@ class MyDataSet:
         self.X_preprocessed = self.X / 255.0
 
 
+class CommaAiDataSet:
+
+    def __init__(self):
+        with h5py.File("data/log/2016-06-08--11-46-01.h5", "r") as f:
+            print(f.keys())
+
+        with h5py.File("data/camera/2016-06-08--11-46-01.h5", "r") as f:
+            print(f.keys())
+
 if __name__ == '__main__':
-    ds = MyDataSet("mydata/")
+    ds = CommaAiDataSet()
