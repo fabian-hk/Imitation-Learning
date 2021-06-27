@@ -1,17 +1,19 @@
 import tensorflow as tf
 import matplotlib.pyplot as plt
+import numpy as np
 
-from data_set import DataSet
+from data_set import DataSet, CommaAiDataSet, ReferenceDataSet
 
 from visualization import visualize_angle_in_gif
 import utils
 
 
-def train_and_evaluate(input_size=None, output_bins=45):
+def train_and_evaluate(ds: DataSet = ReferenceDataSet(), input_size=None, output_bins=45, epochs=100):
     tf.random.set_seed(1)
+    np.random.seed(1)
+    tf.config.experimental_run_functions_eagerly(True)
 
     # load data and preprocess them
-    ds = DataSet()
     ds.preprocessing(scale=input_size, output_bins=output_bins)
     x_train, y_train = ds.get_train_data()
 
@@ -26,19 +28,26 @@ def train_and_evaluate(input_size=None, output_bins=45):
     ])
 
     model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-4),
-                  loss=tf.keras.losses.MeanSquaredError()
+                  loss=tf.keras.losses.MeanSquaredError(),
+                  metrics=[utils.alvinn_accuracy]
                   )
 
     # train the model
     print("---- Training ----")
-    history = model.fit(x_train, y_train, epochs=100)
+    history = model.fit(x_train, y_train, epochs=epochs)
     model.save("model/")
 
     plt.plot(history.history["loss"])
     plt.title("Loss over Epochs")
     plt.ylabel("Mean Squared Error")
-    plt.xlabel("#Epochs")
-    plt.legend()
+    plt.xlabel("Number of Epochs")
+    plt.show()
+
+    plt.plot(history.history["alvinn_accuracy"])
+    plt.title("Accuracy over Epochs")
+    plt.ylabel("Accuracy")
+    plt.xlabel("Number of Epochs")
+    plt.show()
 
     # test the model
     print("---- Testing ----")
@@ -59,7 +68,11 @@ def train_and_evaluate(input_size=None, output_bins=45):
     plt.ylabel("Steering Angle")
 
     # visualize true and predicted angle in the images
-    visualize_angle_in_gif(ds.x[ds.train_data_length:], y_pred_degree, y_test_degree, f"visualization_{input_size}_{output_bins}".replace(" ", ""))
+    visualize_angle_in_gif(ds.X_resized[ds.train_data_length:], y_test_degree, y_pred_degree,
+                           f"visualization_{ds.__class__.__name__}_{epochs}_{input_size}_{output_bins}".replace(" ", ""))
+
 
 if __name__ == '__main__':
-    train_and_evaluate(input_size=(30,32), output_bins=45)
+    print(tf.__version__)
+
+    train_and_evaluate(epochs=10, input_size=(60, 64), output_bins=65)
