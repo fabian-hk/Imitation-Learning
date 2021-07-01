@@ -8,7 +8,9 @@ from visualization import visualize_angle_in_gif
 import utils
 
 
-def train_and_evaluate(ds: DataSet = ReferenceDataSet(), input_size=None, output_bins=45, epochs=100):
+def train_and_evaluate(
+    ds: DataSet = ReferenceDataSet(), input_size=None, output_bins=45, epochs=100
+):
     tf.random.set_seed(1)
     np.random.seed(1)
     tf.config.experimental_run_functions_eagerly(True)
@@ -20,17 +22,20 @@ def train_and_evaluate(ds: DataSet = ReferenceDataSet(), input_size=None, output
     input_shape = x_train[0].shape
 
     # define the model
-    model = tf.keras.models.Sequential([
-        tf.keras.layers.Flatten(input_shape=input_shape),
-        tf.keras.layers.Dense(input_shape[0] * input_shape[1], activation=None),
-        tf.keras.layers.Dense(29, activation=tf.keras.activations.sigmoid),
-        tf.keras.layers.Dense(output_bins, activation=None)
-    ])
+    model = tf.keras.models.Sequential(
+        [
+            tf.keras.layers.Flatten(input_shape=input_shape),
+            tf.keras.layers.Dense(input_shape[0] * input_shape[1], activation=None),
+            tf.keras.layers.Dense(29, activation=tf.keras.activations.sigmoid),
+            tf.keras.layers.Dense(output_bins, activation=None),
+        ]
+    )
 
-    model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-4),
-                  loss=tf.keras.losses.MeanSquaredError(),
-                  metrics=[utils.alvinn_accuracy]
-                  )
+    model.compile(
+        optimizer=tf.keras.optimizers.Adam(learning_rate=1e-4),
+        loss=tf.keras.losses.MeanSquaredError(),
+        metrics=[utils.alvinn_accuracy],
+    )
 
     # train the model
     print("---- Training ----")
@@ -68,11 +73,17 @@ def train_and_evaluate(ds: DataSet = ReferenceDataSet(), input_size=None, output
     plt.ylabel("Steering Angle")
 
     # visualize true and predicted angle in the images
-    visualize_angle_in_gif(ds.X_resized[ds.train_data_length:], y_test_degree, y_pred_degree,
-                           f"visualization_{ds.__class__.__name__}_{epochs}_{input_size}_{output_bins}".replace(" ", ""))
+    visualize_angle_in_gif(
+        ds.X_resized[ds.train_data_length :],
+        y_test_degree,
+        y_pred_degree,
+        f"visualization_{ds.__class__.__name__}_{epochs}_{input_size}_{output_bins}".replace(
+            " ", ""
+        ),
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print(tf.__version__)
 
     train_and_evaluate(epochs=10, input_size=(60, 64), output_bins=65)

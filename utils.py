@@ -40,6 +40,5 @@ def accuracy(y_true: np.ndarray, y_pred: np.ndarray) -> float:
 
 def alvinn_accuracy(y_true: tf.Tensor, y_pred: tf.Tensor) -> tf.Tensor:
     return tf.convert_to_tensor(
-        accuracy(y_true.numpy(), y_pred.numpy()),
-        dtype=tf.float32
+        accuracy(y_true.numpy(), y_pred.numpy()), dtype=tf.float32
     )

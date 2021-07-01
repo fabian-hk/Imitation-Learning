@@ -11,7 +11,6 @@ from visualization import visualize_angle_in_mp4, visualize_angle_in_gif
 
 
 class DataSet:
-
     def __init__(self):
         self.X = []
         self.y = []
@@ -37,12 +36,11 @@ class DataSet:
 
 
 class ReferenceDataSet(DataSet):
-
     def __init__(self, data_set_file="data/track_data_2.h5"):
         super(ReferenceDataSet, self).__init__()
 
         with h5py.File(data_set_file, "r") as f:
-            for image, label in zip(f['images'], f['angles']):
+            for image, label in zip(f["images"], f["angles"]):
                 self.X.append(image)
                 self.y.append(label)
 
@@ -81,7 +79,6 @@ class ReferenceDataSet(DataSet):
 
 
 class MyDataSet:
-
     def __init__(self, f="/opt/project/mydata"):
         folder = Path(f)
         self.X = []
@@ -98,16 +95,19 @@ class MyDataSet:
 
 
 class CommaAiDataSet(DataSet):
-
     def __init__(self, data_set_path="/opt/project/"):
         super(CommaAiDataSet, self).__init__()
 
-        with h5py.File(f"{data_set_path}data/commaai/camera/2016-06-08--11-46-01.h5", "r") as f:
+        with h5py.File(
+            f"{data_set_path}data/commaai/camera/2016-06-08--11-46-01.h5", "r"
+        ) as f:
             print(f["X"].shape)
             for x in f["X"]:
                 self.X.append(x[2])
 
-        with h5py.File(f"{data_set_path}data/commaai/log/2016-06-08--11-46-01.h5", "r") as f:
+        with h5py.File(
+            f"{data_set_path}data/commaai/log/2016-06-08--11-46-01.h5", "r"
+        ) as f:
             steering_angle = f["steering_angle"]
             j = -1
             for i, v in enumerate(f["cam1_ptr"]):
@@ -117,8 +117,8 @@ class CommaAiDataSet(DataSet):
 
         usable = (4800, 17000)
 
-        self.X = self.X[usable[0]:usable[1]]
-        self.y = self.y[usable[0]:usable[1]]
+        self.X = self.X[usable[0] : usable[1]]
+        self.y = self.y[usable[0] : usable[1]]
 
         self.X = np.asarray(self.X)
         print(f"X shape: {self.X.shape}")
@@ -138,7 +138,7 @@ class CommaAiDataSet(DataSet):
         X_tmp = []
         for x in self.X:
             img = Image.fromarray(x)
-            img = img.resize((60, 64), Image.NEAREST)
+            img = img.resize(scale, Image.NEAREST)
             X_tmp.append(np.asarray(img, dtype=np.float32))
 
         self.X_resized = np.asarray(X_tmp)
@@ -162,7 +162,7 @@ class CommaAiDataSet(DataSet):
         self.y_test = self.y_encoded[split:]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     ds = CommaAiDataSet()
     ds.normalize_steering_angle()
     visualize_angle_in_gif(ds.X, ds.y, fn="commaai_data_set")
