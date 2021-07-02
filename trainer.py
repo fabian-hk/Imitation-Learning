@@ -25,7 +25,7 @@ def train_and_evaluate(
     model = tf.keras.models.Sequential(
         [
             tf.keras.layers.Flatten(input_shape=input_shape),
-            tf.keras.layers.Dense(input_shape[0] * input_shape[1], activation=None),
+            #tf.keras.layers.Dense(input_shape[0] * input_shape[1], activation=None),
             tf.keras.layers.Dense(29, activation=tf.keras.activations.sigmoid),
             tf.keras.layers.Dense(output_bins, activation=None),
         ]
@@ -86,4 +86,4 @@ def train_and_evaluate(
 if __name__ == "__main__":
     print(tf.__version__)
 
-    train_and_evaluate(epochs=10, input_size=(60, 64), output_bins=65)
+    train_and_evaluate(epochs=10, input_size=(60, 64), output_bins=45)
