@@ -163,6 +163,5 @@ class CommaAiDataSet(DataSet):
 
 
 if __name__ == "__main__":
-    ds = CommaAiDataSet()
+    ds = CommaAiDataSet("")
     ds.normalize_steering_angle()
-    visualize_angle_in_gif(ds.X, ds.y, fn="commaai_data_set")

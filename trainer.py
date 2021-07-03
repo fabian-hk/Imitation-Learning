@@ -42,6 +42,13 @@ def train_and_evaluate(
     history = model.fit(x_train, y_train, epochs=epochs)
     model.save("model/")
 
+    weights = model.layers[1].get_weights()[0]
+    for i in range(29):
+        plt.title(f"Hidden Unit {i}")
+        plt.imshow(weights.T[i].reshape(60, 64))
+        plt.colorbar()
+        plt.show()
+
     plt.plot(history.history["loss"])
     plt.title("Loss over Epochs")
     plt.ylabel("Mean Squared Error")
@@ -86,4 +93,4 @@ def train_and_evaluate(
 if __name__ == "__main__":
     print(tf.__version__)
 
-    train_and_evaluate(epochs=10, input_size=(60, 64), output_bins=45)
+    train_and_evaluate(epochs=100, input_size=(64, 60), output_bins=45)
