@@ -103,7 +103,7 @@ class CommaAiDataSet(DataSet):
         ) as f:
             print(f["X"].shape)
             for x in f["X"]:
-                self.X.append(x[2])
+                self.X.append(x)
 
         with h5py.File(
             f"{data_set_path}data/commaai/log/2016-06-08--11-46-01.h5", "r"
@@ -137,7 +137,7 @@ class CommaAiDataSet(DataSet):
 
         X_tmp = []
         for x in self.X:
-            img = Image.fromarray(x)
+            img = Image.fromarray(x[2])  # take only the blue channel
             img = img.resize(scale, Image.NEAREST)
             X_tmp.append(np.asarray(img, dtype=np.float32))
 
@@ -165,3 +165,5 @@ class CommaAiDataSet(DataSet):
 if __name__ == "__main__":
     ds = CommaAiDataSet("")
     ds.normalize_steering_angle()
+    #ds = ReferenceDataSet()
+    visualize_angle_in_mp4(ds.X, ds.y, resize=False, fn="intro")

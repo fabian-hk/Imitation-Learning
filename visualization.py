@@ -13,7 +13,10 @@ def label_to_upper_point(degree: float, center: Tuple[int, int]) -> Tuple[int, i
 
 def draw_angle_in_image(image: np.ndarray, y_true, y_pred=None, resize=True):
     image = np.asarray(image, dtype=np.uint8)
-    img = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
+    if len(image.shape) == 2:
+        img = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
+    else:
+        img = cv2.merge((image[0], image[1], image[2]))
     if resize:
         img = cv2.resize(img, (320, 300), interpolation=cv2.INTER_NEAREST)
     center = (round(img.shape[1] / 2.0), round(img.shape[0] / 2.0))
@@ -30,7 +33,7 @@ def visualize_angle_in_mp4(
 ):
     shape = (320, 300)
     if not resize:
-        shape = (images[0].shape[1], images[0].shape[0])
+        shape = (images[0].shape[-1], images[0].shape[-2])
     print(f"Video size: {shape}")
     video = cv2.VideoWriter(
         f"graphic/{fn}.mp4", cv2.VideoWriter_fourcc("M", "P", "4", "V"), 24, shape
