@@ -1,5 +1,8 @@
 from typing import Tuple, List
 import cv2
+import matplotlib.pyplot as plt
+
+plt.rcParams.update({"font.size": 30})
 import numpy as np
 from PIL import Image
 
@@ -79,10 +82,46 @@ def visualize_angle_in_gif(
     )
 
 
+def data_set_visualization(images: List[np.ndarray], y_true):
+    images_preprocessed = []
+    for img, y in zip(images, y_true):
+        images_preprocessed.append(draw_angle_in_image(img, y, resize=False))
+
+    fig, axs = plt.subplots(2, 2, figsize=(20, 15))
+    axs[0, 0].imshow(images_preprocessed[0])
+    axs[0, 0].set_title(f"Steering Angle {round(y_true[0])}°")
+    axs[0, 0].set_xlabel("Pixel x")
+    axs[0, 0].set_ylabel("Pixel y")
+    axs[0, 1].imshow(images_preprocessed[1])
+    axs[0, 1].set_title(f"Steering Angle {round(y_true[1])}°")
+    axs[0, 1].set_xlabel("Pixel x")
+    axs[0, 1].set_ylabel("Pixel y")
+    axs[1, 0].imshow(images_preprocessed[2])
+    axs[1, 0].set_title(f"Steering Angle {round(y_true[2])}°")
+    axs[1, 0].set_xlabel("Pixel x")
+    axs[1, 0].set_ylabel("Pixel y")
+    axs[1, 1].imshow(images_preprocessed[3])
+    axs[1, 1].set_title(f"Steering Angle {round(y_true[3])}°")
+    axs[1, 1].set_xlabel("Pixel x")
+    axs[1, 1].set_ylabel("Pixel y")
+    plt.show()
+
+
+def reference_data_set_visualization():
+    from data_set import ReferenceDataSet
+
+    df = ReferenceDataSet()
+
+    img = [df.X[0], df.X[300], df.X[50], df.X[1000]]
+    y_true = [df.y[0], df.y[300], df.y[50], df.y[1000]]
+    data_set_visualization(img, y_true)
+
+
 if __name__ == "__main__":
-    from data_set import DataSet
+    from data_set import CommaAiDataSet
 
-    df = DataSet(f"data/track_data_2.h5")
-    df.preprocessing()
-
-    visualize_angle_in_gif(df.X[: df.train_data_length], df.y[: df.train_data_length])
+    df = CommaAiDataSet("")
+    df.normalize_steering_angle()
+    img = [df.X[0], df.X[300], df.X[50], df.X[1000]]
+    y_true = [df.y[0], df.y[300], df.y[50], df.y[1000]]
+    data_set_visualization(img, y_true)

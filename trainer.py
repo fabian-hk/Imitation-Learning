@@ -1,5 +1,6 @@
 import tensorflow as tf
 import matplotlib.pyplot as plt
+plt.rcParams.update({'font.size': 30})
 import numpy as np
 
 from data_set import DataSet, CommaAiDataSet, ReferenceDataSet
@@ -43,11 +44,22 @@ def train_and_evaluate(
     model.save("model/")
 
     weights = model.layers[1].get_weights()[0]
-    for i in range(29):
-        plt.title(f"Hidden Unit {i}")
-        plt.imshow(weights.T[i].reshape(60, 64))
-        plt.colorbar()
-        plt.show()
+
+    plt.figure(figsize=(15, 12))
+    plt.title(f"Hidden Unit {2}")
+    plt.imshow(weights.T[2].reshape(60, 64))
+    plt.xlabel("Pixel x")
+    plt.ylabel("Pixel y")
+    plt.colorbar()
+    plt.show()
+
+    plt.figure(figsize=(15, 12))
+    plt.title(f"Hidden Unit {22}")
+    plt.imshow(weights.T[22].reshape(60, 64))
+    plt.xlabel("Pixel x")
+    plt.ylabel("Pixel y")
+    plt.colorbar()
+    plt.show()
 
     plt.plot(history.history["loss"])
     plt.title("Loss over Epochs")
