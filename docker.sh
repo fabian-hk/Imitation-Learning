@@ -3,7 +3,7 @@
 # docker run -it --name tensorflow-gpu-jupyter tensorflow/tensorflow:latest-gpu-jupyter
 # docker commit tensorflow-gpu-jupyter-tmp tensorflow-gpu-jupyter
 
-docker run -it --rm --name jupyter --gpus all \
+docker run -d -it --rm --name jupyter --gpus all \
   -p 8888:8888 \
   -v "/home/fabian/Documents/studium/Imitation-Learning:/opt/project" \
   -v "/media/fabian/Disk1/Data/commaai:/opt/project/data/commaai" \

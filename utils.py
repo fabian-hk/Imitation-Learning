@@ -39,6 +39,25 @@ def accuracy(y_true: np.ndarray, y_pred: np.ndarray) -> float:
 
 
 def alvinn_accuracy(y_true: tf.Tensor, y_pred: tf.Tensor) -> tf.Tensor:
-    return tf.convert_to_tensor(
-        accuracy(y_true.numpy(), y_pred.numpy()), dtype=tf.float32
+    # compute the argmax for each output sample
+    y_true_argmax = tf.math.argmax(y_true, axis=1)
+    y_pred_argmax = tf.math.argmax(y_pred, axis=1)
+
+    # 1. Subtract the argmax values and take the absolute value
+    # 2. Subtract 1 from this => all correct predictions are now either 0 or -1
+    # 3. Use the relu function to set all correct predictions to 0
+    # 4. Count the non zero values => inverse accuracy
+    count_non_zero = tf.math.count_nonzero(
+        tf.nn.relu(
+            tf.subtract(tf.math.abs(tf.math.subtract(y_true_argmax, y_pred_argmax)), 1)
+        )
+    )
+
+    # 1. Calculate the inverse accuracy
+    # 2. Subtract it from 1 => accuracy
+    return tf.math.subtract(
+        tf.constant(1, dtype=tf.dtypes.float64),
+        tf.math.divide(
+            count_non_zero, tf.size(y_true_argmax, out_type=tf.dtypes.int64)
+        ),
     )

@@ -14,7 +14,7 @@ def train_and_evaluate(
 ):
     tf.random.set_seed(1)
     np.random.seed(1)
-    tf.config.experimental_run_functions_eagerly(True)
+    #tf.config.experimental_run_functions_eagerly(True)
 
     # load data and preprocess them
     ds.preprocessing(scale=input_size, output_bins=output_bins)
