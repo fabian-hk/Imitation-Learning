@@ -1,6 +1,7 @@
 import tensorflow as tf
 import matplotlib.pyplot as plt
-plt.rcParams.update({'font.size': 30})
+
+plt.rcParams.update({"font.size": 30})
 import numpy as np
 
 from data_set import DataSet, CommaAiDataSet, ReferenceDataSet
@@ -10,11 +11,15 @@ import utils
 
 
 def train_and_evaluate(
-    ds: DataSet = ReferenceDataSet(), input_size=None, output_bins=45, epochs=100
+    ds: DataSet = ReferenceDataSet(),
+    input_size=None,
+    output_bins=45,
+    epochs=100,
+    vis_ranges=[(0, 3200)],
 ):
     tf.random.set_seed(1)
     np.random.seed(1)
-    #tf.config.experimental_run_functions_eagerly(True)
+    # tf.config.experimental_run_functions_eagerly(True)
 
     # load data and preprocess them
     ds.preprocessing(scale=input_size, output_bins=output_bins)
@@ -26,7 +31,7 @@ def train_and_evaluate(
     model = tf.keras.models.Sequential(
         [
             tf.keras.layers.Flatten(input_shape=input_shape),
-            #tf.keras.layers.Dense(input_shape[0] * input_shape[1], activation=None),
+            # tf.keras.layers.Dense(input_shape[0] * input_shape[1], activation=None),
             tf.keras.layers.Dense(29, activation=tf.keras.activations.sigmoid),
             tf.keras.layers.Dense(output_bins, activation=None),
         ]
@@ -92,17 +97,21 @@ def train_and_evaluate(
     plt.ylabel("Steering Angle")
 
     # visualize true and predicted angle in the images
-    visualize_angle_in_gif(
-        ds.X_resized[ds.train_data_length :],
-        y_test_degree,
-        y_pred_degree,
-        f"visualization_{ds.__class__.__name__}_{epochs}_{input_size}_{output_bins}".replace(
-            " ", ""
-        ),
-    )
+    for r in vis_ranges:
+        visualize_angle_in_gif(
+            ds.X_resized[ds.train_data_length :],
+            y_test_degree,
+            y_pred_degree,
+            fn=f"visualization_{ds.__class__.__name__}_{epochs}_{input_size}_{output_bins}_{r}".replace(
+                " ", ""
+            ),
+            img_range=r,
+        )
 
 
 if __name__ == "__main__":
     print(tf.__version__)
 
-    train_and_evaluate(epochs=100, input_size=(64, 60), output_bins=45)
+    train_and_evaluate(
+        ds=CommaAiDataSet(), epochs=30, input_size=(64, 60), output_bins=45, vis_ranges=[(0, 209), (2214, 2774), (4010, 4878)]
+    )

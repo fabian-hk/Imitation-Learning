@@ -59,16 +59,18 @@ def visualize_angle_in_gif(
     fn="visualization",
     duration=40,
     resize=True,
+    img_range=(0, 3200),
 ):
-    max_imgs = 3200
     result = []
     if y_pred is not None:
-        for image, y, y_ in zip(images[:max_imgs], y_true[:max_imgs], y_pred[:max_imgs]):
+        for image, y, y_ in zip(
+            images[img_range[0]:img_range[1]], y_true[img_range[0]:img_range[1]], y_pred[img_range[0]:img_range[1]]
+        ):
             img = draw_angle_in_image(image, y, y_, resize=resize)
             img = Image.fromarray(img, mode="RGB")
             result.append(img)
     else:
-        for image, y in zip(images[:max_imgs], y_true[:max_imgs]):
+        for image, y in zip(images[img_range[0]:img_range[1]], y_true[img_range[0]:img_range[1]]):
             img = draw_angle_in_image(image, y, resize=resize)
             img = Image.fromarray(img, mode="RGB")
             result.append(img)
