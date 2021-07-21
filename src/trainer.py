@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 plt.rcParams.update({"font.size": 30})
 import numpy as np
 
-from data_set import DataSet, CommaAiDataSet, ReferenceDataSet
+from data_sets import DataSet, CommaAiDataSet, ReferenceDataSet
 
 from visualization import visualize_angle_in_gif
 import utils

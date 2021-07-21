@@ -111,7 +111,7 @@ def data_set_visualization(images: List[np.ndarray], y_true):
 
 
 def reference_data_set_visualization():
-    from data_set import ReferenceDataSet
+    from data_sets import ReferenceDataSet
 
     df = ReferenceDataSet()
 
@@ -121,7 +121,7 @@ def reference_data_set_visualization():
 
 
 if __name__ == "__main__":
-    from data_set import CommaAiDataSet
+    from data_sets import CommaAiDataSet
 
     df = CommaAiDataSet("")
     df.normalize_steering_angle()

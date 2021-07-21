@@ -6,4 +6,5 @@ venv/
 __pycache__/
 .ipynb_checkpoints/
 model/
-graphic/mydata_visualization.gif
+graphic/
+.git/

@@ -4,10 +4,9 @@ import h5py
 import numpy as np
 from sklearn.utils import shuffle
 from PIL import Image
-from pathlib import Path
 
-import utils
-from visualization import visualize_angle_in_mp4, visualize_angle_in_gif
+from . import utils
+from .visualization import visualize_angle_in_mp4
 
 
 class DataSet:
@@ -78,36 +77,15 @@ class ReferenceDataSet(DataSet):
         self.y_test = utils.encode_angle(self.y_test, output_bins=output_bins)
 
 
-class MyDataSet:
-    def __init__(self, f="/opt/project/mydata"):
-        folder = Path(f)
-        self.X = []
-        for file in folder.iterdir():
-            img = Image.open(file)
-            img = img.convert("L")
-            img = img.crop((0, 0, 220, 206))
-            img = img.resize((64, 60), Image.NEAREST)
-            self.X.append(np.array(img, dtype=np.float32))
-
-        self.X = np.asarray(self.X)
-
-        self.X_preprocessed = self.X / 255.0
-
-
 class CommaAiDataSet(DataSet):
-    def __init__(self, data_set_path="/opt/project/"):
+    def __init__(self):
         super(CommaAiDataSet, self).__init__()
 
-        with h5py.File(
-            f"{data_set_path}data/commaai/camera/2016-06-08--11-46-01.h5", "r"
-        ) as f:
-            print(f["X"].shape)
+        with h5py.File("data/camera/2016-06-08--11-46-01.h5", "r") as f:
             for x in f["X"]:
                 self.X.append(x)
 
-        with h5py.File(
-            f"{data_set_path}data/commaai/log/2016-06-08--11-46-01.h5", "r"
-        ) as f:
+        with h5py.File("data/log/2016-06-08--11-46-01.h5", "r") as f:
             steering_angle = f["steering_angle"]
             j = -1
             for i, v in enumerate(f["cam1_ptr"]):
@@ -163,7 +141,7 @@ class CommaAiDataSet(DataSet):
 
 
 if __name__ == "__main__":
-    ds = CommaAiDataSet("")
+    ds = CommaAiDataSet()
     ds.normalize_steering_angle()
-    #ds = ReferenceDataSet()
+    # ds = ReferenceDataSet()
     visualize_angle_in_mp4(ds.X, ds.y, resize=False, fn="intro")
