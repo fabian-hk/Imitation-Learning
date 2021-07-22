@@ -26,8 +26,15 @@ This project was created during the seminar
 
 ### OR use Docker to run the notebook with GPU support
 
-- Copy the date set in the respective folders as 
+- Copy the data sets in the respective folders as 
 described above
 - Build and run the Docker container with ``docker/start.sh`` from the repository root
 - The notebook is now available under [http://localhost:8888](http://localhost:8888/)
-- The token to access it is ``b0355f51bc6f93f72553da74bb6548801e64b2f9689ad96c``
+- The access token is ``b0355f51bc6f93f72553da74bb6548801e64b2f9689ad96c``
+- Now you can view the notebook ``Seminar_ImitationLearning_FabianHauck.ipynb``
+
+## Data Sets
+
+1. The file ``track_data_2.h5`` can be found in this [repository](https://github.com/stephencwelch/self_driving_cars/tree/master/data_sample).
+
+2. The other files are part of the [comma.ai driving data set](https://research.comma.ai/).
