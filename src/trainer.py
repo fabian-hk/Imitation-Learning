@@ -102,7 +102,10 @@ def train_and_evaluate(
             y_pred_degree,
             fn=f"visualization_{ds.__class__.__name__}_{epochs}_{input_size}_{output_bins}_{r}".replace(
                 " ", ""
-            ),
+            )
+            .replace("(", "_")
+            .replace(",", "_")
+            .replace(")", "_"),
             img_range=r,
         )
 
@@ -111,5 +114,9 @@ if __name__ == "__main__":
     print(tf.__version__)
 
     train_and_evaluate(
-        ds=CommaAiDataSet(), epochs=30, input_size=(64, 60), output_bins=45, vis_ranges=[(0, 209), (2214, 2774), (4010, 4878)]
+        ds=CommaAiDataSet(),
+        epochs=30,
+        input_size=(64, 60),
+        output_bins=45,
+        vis_ranges=[(0, 209), (2214, 2774), (4010, 4878)],
     )
