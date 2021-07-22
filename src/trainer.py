@@ -19,7 +19,6 @@ def train_and_evaluate(
 ):
     tf.random.set_seed(1)
     np.random.seed(1)
-    # tf.config.experimental_run_functions_eagerly(True)
 
     # load data and preprocess them
     ds.preprocessing(scale=input_size, output_bins=output_bins)
@@ -31,7 +30,6 @@ def train_and_evaluate(
     model = tf.keras.models.Sequential(
         [
             tf.keras.layers.Flatten(input_shape=input_shape),
-            # tf.keras.layers.Dense(input_shape[0] * input_shape[1], activation=None),
             tf.keras.layers.Dense(29, activation=tf.keras.activations.sigmoid),
             tf.keras.layers.Dense(output_bins, activation=None),
         ]
