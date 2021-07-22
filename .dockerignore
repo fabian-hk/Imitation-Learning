@@ -1,6 +1,7 @@
 .idea/
 data/
 venv/
+env/
 *.avi
 *.mp4
 __pycache__/
